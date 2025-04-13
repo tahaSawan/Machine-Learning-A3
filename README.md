@@ -22,6 +22,6 @@ A machine learning project using a custom NumPy-based linear regression model wi
 ---
 
 ## 🤗 Hugging Face Model Link
-👉 [https://huggingface.co/tahasawan/linear-regression-numpy](https://huggingface.co/tahasawan/linear-regression-numpy)
+👉 [https://huggingface.co/tahasawan/linear-regression-numpy](https://huggingface.co/tahasawan/linear-regression-numpy/tree/main)
 
 ---
