@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Predictor | Linear Regression</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-weight: 300;
+            font-size: 0.9rem;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+        
+        .result {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            background: #f8f9fa;
+            display: none;
+        }
+        
+        .result.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .result h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .prediction {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .error {
+            color: var(--danger);
+            background: rgba(247, 37, 133, 0.1);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .error.active {
+            display: block;
+        }
+        
+        .example {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI Prediction Engine</h1>
+            <p>Linear Regression Model</p>
+        </div>
+        
+        <div class="content">
+            <form method="POST" id="predictionForm">
+                <div class="form-group">
+                    <label for="features">Input Features</label>
+                    <input type="text" 
+                           name="features" 
+                           id="features" 
+                           placeholder="Enter 8 comma-separated numbers"
+                           value="{% if request.method == 'POST' %}{{ request.form.features }}{% endif %}">
+                    <p class="example">Example: 1, 2, 3, 4, 5, 6, 7, 8</p>
+                </div>
+                
+                <button type="submit" class="btn">Calculate Prediction</button>
+            </form>
+            
+            <div class="result {% if prediction is not none %}active{% endif %}" id="result">
+                <h3>Predicted Value</h3>
+                <div class="prediction">{{ prediction }}</div>
+            </div>
+            
+            <div class="error {% if error %}active{% endif %}" id="error">
+                {{ error }}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple form handling to prevent empty submissions
+        document.getElementById('predictionForm').addEventListener('submit', function(e) {
+            const input = document.getElementById('features').value.trim();
+            if (!input) {
+                e.preventDefault();
+                document.getElementById('error').textContent = 'Please enter some values';
+                document.getElementById('error').classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
